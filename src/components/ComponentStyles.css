@@ -1,0 +1,113 @@
+@import "../commons/styles/Styles.css";
+.card-view {
+    border: 1px solid #E9ECEF;
+    border-radius: 4px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+}
+
+.file-input-label {
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+}
+
+.file-input-label:hover {
+    text-decoration: underline;
+}
+
+.avatar-120 {
+    border-radius: 50%;
+    width: 7.5rem;
+    height: 7.5rem;
+}
+
+#fileInput {
+    display: none;
+}
+
+.image-picker {
+    width: 7rem;
+    height: 7rem;
+    background: #F7F9FA;
+    border: .1px solid #6C757D;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0;
+}
+
+.image-picker.error {
+    border: .5px solid #f44336 !important;
+}
+
+.expandable {
+    cursor: auto;
+    position: relative;
+}
+
+.expandable .expandable-content {
+    height: 100px;
+    overflow: hidden;
+}
+
+.expandable.expandable-indicator-white .expandable-indicator {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.9) 50%, #ffffff 100%);
+}
+
+.expandable .expandable-indicator {
+    content: " ";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 40px;
+    bottom: 0;
+    background: rgba(245, 245, 245, 0);
+    text-align: center;
+    line-height: 40px;
+    /* transition: transform 0.1s */
+}
+
+.expandable.expandable-open .expandable-content {
+    position: relative;
+    overflow: visible;
+    margin-bottom: 40px;
+    height: auto;
+    /* transition: transform 0.1s */
+}
+
+.expandable.expandable-open .expandable-indicator {
+    background: none;
+    transform: translate3d(0, 40px, 0);
+}
+
+.expandable .expandable-indicator i:before {
+    content: "\f103";
+}
+
+.expandable.expandable-open .expandable-indicator i:before {
+    content: "\f102";
+}
+
+.text-input {
+    border: 1px solid #ced4da;
+    padding: 10px 12px;
+    font-size: 16px;
+    transition: border-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-color: #176E98;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.MuiAutocomplete-tag {
+    margin-top: 8px !important;
+}
+
+.MuiGridListTile-imgFullHeight {
+    height: auto !important;
+}

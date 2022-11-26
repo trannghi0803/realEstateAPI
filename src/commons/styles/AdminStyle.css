@@ -1,0 +1,7 @@
+.item-price .MuiOutlinedInput-notchedOutline{   
+    border-color: rgba(0, 0, 0, 0.23) !important;
+    border-radius: 4px !important
+}
+.item-price .MuiOutlinedInput-input{
+    padding: 18.5px 14px !important;
+}
