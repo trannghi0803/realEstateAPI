@@ -76,7 +76,7 @@ class BaseController<TModel, TService> {
         // }
         // let mesErr = undefined;
         
-        const message = error.message.msg || Strings.Message.ERROR;
+        const message = Strings.Message.ERROR;
 
         Helpers.showAlert(message, "error");
     }

@@ -41,8 +41,8 @@ export default class LoginView extends BaseView<LoginController, AuthModel, Auth
                                     label={Strings.ProfileInfo.EMAIL}
                                     id="email"
                                     type="email"
-                                    value={'tranvannghi1998@gmail.com'}
-                                    // value={this.model.email?.value}
+                                    // value={'tranvannghi1998@gmail.com'}
+                                    value={this.model.email?.value}
                                     error={!Helpers.isNullOrEmpty(this.model.email?.error)}
                                     helperText={this.model.email?.error}
                                     onChange={(event) => {
@@ -57,8 +57,8 @@ export default class LoginView extends BaseView<LoginController, AuthModel, Auth
                                     fullWidth
                                     secure
                                     label={Strings.ProfileInfo.PASSWORD}
-                                    defaultValue={'nghi1234'}
-                                    // defaultValue={this.model.password?.value}
+                                    // defaultValue={'nghi1234'}
+                                    defaultValue={this.model.password?.value}
                                     error={!Helpers.isNullOrEmpty(this.model.password?.error)}
                                     errorMessage={this.model.password?.error}
                                     onChangeValue={(value) => {

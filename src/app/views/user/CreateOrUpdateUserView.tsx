@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { ArrowBack, Save } from "@material-ui/icons";
 
 import BaseView from "../base/BaseView";
@@ -8,18 +8,18 @@ import { Helpers } from "../../../commons/utils";
 import { Strings } from "../../../constants";
 import { GlobalState } from "../../../stores/GlobalState";
 import {
-    ControlAutocomplete, ControlHtmlInput, ControlImageGridList, ControlInput
+    ControlAutocomplete, ControlCheckbox, ControlDateTimePicker, ControlImageGridList, ControlInput
 } from "../../../components";
 import moment from "moment";
-import { NewsModel } from "../../models";
-import { NewsService } from "../../services";
-import { CreateOrUpdateNewsController } from "../../controllers/news";
-import { NewsType } from "../../../constants/Enums";
+import { UserModel } from "../../models";
+import { UserService } from "../../services";
+import { CreateOrUpdateUserController } from "../../controllers/user";
+import { UserType } from "../../../constants/Enums";
 
 @observer
-export default class CreateOrUpdateNewsView extends BaseView<CreateOrUpdateNewsController, NewsModel, NewsService> {
+export default class CreateOrUpdateUserView extends BaseView<CreateOrUpdateUserController, UserModel, UserService> {
     constructor(props: any) {
-        super(props, CreateOrUpdateNewsController, NewsModel, NewsService);
+        super(props, CreateOrUpdateUserController, UserModel, UserService);
     }
 
     renderPhotos() {
@@ -27,11 +27,11 @@ export default class CreateOrUpdateNewsView extends BaseView<CreateOrUpdateNewsC
         let isLoading;
 
         photos = this.model.imageDisplay || [];
-        // isLoading = this.model.isLoadingImages;
 
         return (
             <div>
                 <input
+                    multiple
                     type="file"
                     accept="image/png, image/gif, image/jpeg"
                     style={{ display: 'none' }}
@@ -40,13 +40,12 @@ export default class CreateOrUpdateNewsView extends BaseView<CreateOrUpdateNewsC
                 />
                 <label htmlFor={`contained-button-file`}>
                     <Button variant="outlined" color="primary" component="span" className="mb-3">
-                        {"Chọn hình ảnh"}
+                        {"Chọn ảnh đại diện"}
                     </Button>
                 </label>
                 <Grid>
                     {photos && (
                         <ControlImageGridList
-                            // isLoading={isLoading}
                             photos={photos}
                             onDelete={(e, i, id) => { this.controller.handleDeletePhoto(i, id) }}
                         />
@@ -60,60 +59,66 @@ export default class CreateOrUpdateNewsView extends BaseView<CreateOrUpdateNewsC
         return (
             <Grid container spacing={3} key={this.model.renderKey}>
                 <Grid item xs={12} sm={6} className="title-screen">
-                    {"Thêm tin tức bất động sản"}
+                    {"Thêm User"}
                 </Grid>
-
-                {
-                    this.model.id && this.model.type === NewsType.Crawl &&
-                    <Grid item xs={12} sm={7}>
-                        <a href={`${this.model.slug}`} target="_blank">{"Xem bài viết gốc tại đây"}</a>
-                    </Grid>
-                }
-
                 <Grid item xs={12} sm={7}>
                     <ControlInput
                         required
-                        label={Strings.News.NAME}
-                        errorMessage={this.model.title?.error}
-                        defaultValue={this.model.title?.value || ""}
+                        label={Strings.User.USER_NAME}
+                        errorMessage={this.model.userName?.error}
+                        defaultValue={this.model.userName?.value || ""}
                         onChangeValue={(value) => {
                             this.setModel({
-                                title: { value }
+                                userName: { value }
+                            })
+                        }}
+                    />
+                </Grid>
+                
+                <Grid item xs={12} sm={7}>
+                    <ControlInput
+                        required
+                        label={Strings.User.EMAIL}
+                        defaultValue={this.model.email?.value}
+                        errorMessage={this.model.email?.error}
+                        onChangeValue={(value) => {
+                            this.setModel({
+                                email: { value } 
                             })
                         }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={7}>
-                    <Typography variant="subtitle1" gutterBottom>
-                        {Strings.News.ABSTRACT}
-                    </Typography>
-                    <ControlHtmlInput
-                        content={this.model.abstract?.value || ""}
-                        onBlur={(value: string) => {
+                    <ControlInput
+                        required
+                        label={Strings.User.PHONE_NUMBER}
+                        defaultValue={this.model.phoneNumber?.value}
+                        errorMessage={this.model.phoneNumber?.error}
+                        onChangeValue={(value) => {
                             this.setModel({
-                                abstract: { value }
+                                phoneNumber: { value }
+                            })
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12} sm={7}>
+                    <ControlCheckbox
+                        label={"Tài khoản quản trị"}
+                        containerClassName="mr-3 w-40 d-inline-flex"
+                        value={this.model.role === UserType.Admin ? true : false}
+                        onChangeValue={(value) => {
+                            console.log(value)
+                            this.setModel({
+                                role: value === true ? UserType.Admin : UserType.User,
                             })
                         }}
                     />
                 </Grid>
 
                 <Grid item xs={12} md={12} lg={6}>
-                    <p>{Strings.RealEstate.IMAGE}</p>
+                    <p>{"Ảnh đại diện"}</p>
                     {this.renderPhotos()}
-                </Grid>
-
-                <Grid item xs={12} sm={7}>
-                    <Typography variant="subtitle1" gutterBottom>
-                        {Strings.News.CONTENT}
-                    </Typography>
-                    <ControlHtmlInput
-                        content={this.model.content?.value || ""}
-                        onBlur={(value: string) => {
-                            this.setModel({
-                                content: { value }
-                            })
-                        }}
-                    />
                 </Grid>
 
                 <Grid item xs={12} sm={7} className="d-flex justify-content-center">
@@ -126,19 +131,15 @@ export default class CreateOrUpdateNewsView extends BaseView<CreateOrUpdateNewsC
                         {Strings.Common.GO_BACK}
                     </Button>
                     {/* Save button */}
-                    {
-                        this.model.id && this.model.type === NewsType.Crawl ?
-                        null :
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            className="mt-3 ml-3"
-                            startIcon={<Save />}
-                            onClick={() => this.controller.onCreateOrUpdateNews()}
-                        >
-                            {Strings.Common.SAVE}
-                        </Button>
-                    }
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        className="mt-3 ml-3"
+                        startIcon={<Save />}
+                        onClick={() => this.controller.onCreateOrUpdateUser()}
+                    >
+                        {Strings.Common.SAVE}
+                    </Button>
                 </Grid>
             </Grid>
         )

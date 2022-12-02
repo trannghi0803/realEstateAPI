@@ -55,9 +55,17 @@ const Constants = {
         CHECK_ACCOUNT: "/Account/CheckAccount",
         CHANGE_PASSWORD: "/Account/ChangePassword",
 
+        User: "/user/getAll",
+        USER_DETAIL: "/user/getById",
+        USER_CREATE: "/user/createUser",
+        USER_UPDATE: "/user/updateUser",
+        USER_DELETE: "/user/deleteUser",
         Category: "/category",
         REAL_ESTATE: "/realEstate",
+        APPROVE_REAL_ESTATE: "/realEstate/approve",
+        REJECT_REAL_ESTATE: "/realEstate/reject",
         NEWS: "/news",
+        NEWS_GET_PAGED: "/news/getPaged",
 
         ADDRESS: {
             GET_PROVINCE: "/Address/getProvinces",

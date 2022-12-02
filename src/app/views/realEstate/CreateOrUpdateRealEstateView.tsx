@@ -8,13 +8,13 @@ import { Helpers } from "../../../commons/utils";
 import { Strings } from "../../../constants";
 import { GlobalState } from "../../../stores/GlobalState";
 import {
-    ControlAutocomplete, ControlDateTimePicker, ControlHtmlInput, ControlImageGridList, ControlInput
+    ControlAutocomplete, ControlCheckbox, ControlDateTimePicker, ControlHtmlInput, ControlImageGridList, ControlInput
 } from "../../../components";
 import moment from "moment";
 import { CreateOrUpdateRealEstateController } from "../../controllers/realEstate";
 import { RealEstateModel } from "../../models";
 import { RealEstateService } from "../../services";
-import { RealEstateType } from "../../../constants/Enums";
+import { IsHighLight, RealEstateType, Status } from "../../../constants/Enums";
 
 @observer
 export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdateRealEstateController, RealEstateModel, RealEstateService> {
@@ -94,6 +94,7 @@ export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdat
                 <Grid item xs={12} sm={7}>
                     <ControlInput
                         required
+                        type="number"
                         label={Strings.RealEstate.PRICE}
                         defaultValue={this.model.price?.value || ""}
                         onChangeValue={(value) => {
@@ -106,6 +107,7 @@ export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdat
                 </Grid>
                 <Grid item xs={12} sm={7}>
                     <ControlInput
+                        type="number"
                         label={Strings.RealEstate.AREA}
                         defaultValue={this.model.area?.value || ""}
                         onChangeValue={(value) => {
@@ -237,13 +239,27 @@ export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdat
                 }
 
                 <Grid item xs={12} sm={7}>
+                    <ControlCheckbox
+                        label={Strings.RealEstate.IS_HIGHLIGHT}
+                        containerClassName="mr-3 w-40 d-inline-flex"
+                        value={this.model.isHighLight === IsHighLight.True ? true : false}
+                        onChangeValue={(value) => {
+                            console.log(value)
+                            this.setModel({
+                                isHighLight: value === true ? IsHighLight.True : IsHighLight.False,
+                            })
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12} sm={7}>
                     <Typography variant="subtitle1" gutterBottom>
                         {Strings.RealEstate.ATTRIBUTE}
                     </Typography>
                     <ControlHtmlInput
                         content={this.model.attributes?.value || ""}
                         onBlur={(value: string) => {
-                            console.log("attributes", value)
+                            // console.log("attributes", value)
                             this.setModel({
                                 attributes: { value }
                             })
@@ -257,13 +273,14 @@ export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdat
                     <ControlHtmlInput
                         content={this.model.description || ""}
                         onBlur={(value: string) => {
-                            console.log("description", value)
+                            // console.log("description", value)
                             this.setModel({
                                 description: value
                             })
                         }}
                     />
                 </Grid>
+
                 <Grid item xs={12} md={12} lg={6}>
                     <p>{Strings.RealEstate.IMAGE}</p>
                     {this.renderPhotos()}
@@ -288,6 +305,29 @@ export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdat
                     >
                         {Strings.Common.SAVE}
                     </Button>
+                    {/* {
+                        this.model.id && this.model.status === Status.Inactive &&
+                        <>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                className="mt-3 ml-3"
+                                startIcon={<Save />}
+                                onClick={() => this.controller.approve()}
+                            >
+                                {Strings.Common.APPROVE}
+                            </Button>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                className="mt-3 ml-3"
+                                startIcon={<Save />}
+                                onClick={() => this.controller.reject()}
+                            >
+                                {Strings.Common.REJECT}
+                            </Button>
+                        </>
+                    } */}
                 </Grid>
             </Grid>
         )

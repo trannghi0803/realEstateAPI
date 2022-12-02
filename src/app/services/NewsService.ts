@@ -10,6 +10,14 @@ class NewsService extends BaseSevice {
         return result.data;
     }
 
+    public getPaged = async (data?: any) => {
+        const result = await this.api.get({
+            path: Constants.ApiPath.NEWS_GET_PAGED,
+            data
+        });
+        return result.data;
+    }
+
     public getDetail = async (id: string) => {
         const result = await this.api.get({
             path: `${Constants.ApiPath.NEWS}/${id}`,

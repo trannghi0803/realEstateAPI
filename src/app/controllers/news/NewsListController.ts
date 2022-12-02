@@ -28,23 +28,38 @@ class NewsListController extends BaseController<NewsModel, NewsService> {
         }
     }
 
+    handleChangePage = async (pageNumber: number, pageSize: number) => {
+        const page = Math.ceil((this.model.totalCount || 0) / (pageSize || 1)) || 1;
+        const pageNumberTemp = (pageNumber || 1) >= page ? page : (pageNumber || 1);
+        this.setModel({
+            pageNumber: pageNumberTemp,
+            pageSize
+        })
+        await this.getPaged()
+    }
+
     public getPaged = async () => {
         try {
             this.showPageLoading();
-
-            const result = await this.service.getAll();
-            let newsList: any = [];
-            let totalCount = 0;
-            result?.map((el: any, i: number) => {
-                
-                newsList.push({...el, id: el._id})
-                totalCount++;
-            })
+            let data: any = {
+                pageNumber: this.model.pageNumber,
+                pageSize: this.model.pageSize,
+                title: this.model.searchText || undefined
+            }
+            const result = await this.service.getPaged(data);
+            
             this.setModel({
-                newsList,
-                totalCount
+                newsList: result?.result || [],
+                totalCount: result.totalCount,
+                pageNumber: result.pageNumber,
+                pageSize: result.pageSize,
             })
-
+            let queryString = `&page=${this.model.pageNumber || 1}&pageSize=${this.model.pageSize || Constants.ROW_PER_PAGE}`;
+            if (!Helpers.isNullOrEmpty(this.model.searchText)) { queryString += `&searchText=${this.model.searchText}` }
+            this.history.replace({
+                pathname: Screens.ADMIN_NEWS,
+                search: queryString
+            });
             this.hidePageLoading();
 
         } catch (error) {

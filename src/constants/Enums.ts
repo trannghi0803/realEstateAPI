@@ -21,3 +21,18 @@ export enum CategoryType {
     Sell = 0,
     Rent = 1
 }
+
+export enum NewsType {
+    Create = 1,
+    Crawl = 2
+}
+
+export enum IsHighLight {
+    False = 0,
+    True = 1
+}
+
+export enum UserType {
+    User = 0,
+    Admin = 1
+}

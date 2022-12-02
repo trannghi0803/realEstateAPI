@@ -1,6 +1,7 @@
 import BaseModel from "./BaseModel";
 import { ICodename, IInput } from "../../commons/utils";
 import { Constants } from "../../constants";
+import { Status } from "../../constants/Enums";
 
 interface IAddress {
     provinceName?: string;
@@ -29,6 +30,8 @@ class RealEstateModel extends BaseModel {
     public images?: any[] = [];
     public category?: IInput;
     public type?: number;
+    public isHighLight?: number;
+    public status?: number;
 
     public isLoadingImages?: boolean;
     
@@ -38,6 +41,24 @@ class RealEstateModel extends BaseModel {
     public districtList?: ICodename[];
     public wardList?: ICodename[];
     public address?: IAddress;
+
+    categoryFilter?: string;
+    statusList?: ICodename[] = [
+        {
+            code: `${Status.Active}`,
+            name: "Đã đăng"
+        },
+        {
+            code: `${Status.Inactive}`,
+            name: "Đang chờ duyệt"
+        },
+        {
+            code: `${Status.Reject}`,
+            name: "Từ chối"
+        }
+    ];
+    statusFilter?: number | string;
+    provinceFilter?: string;
 }
 
 export default RealEstateModel;
