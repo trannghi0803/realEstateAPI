@@ -7,6 +7,7 @@ import { CreateOrUpdateUserView, ProflieView, UserListView } from "../app/views/
 import { CategoryListView, CreateOrUpdateCategoryView } from "../app/views/category";
 import { RealEstateListView, CreateOrUpdateRealEstateView } from "../app/views/realEstate";
 import { NewsListView, CreateOrUpdateNewsView } from "../app/views/news";
+import { StatisticListView } from "../app/views/statistic";
 
 export default function MainRoutes() {
     return (
@@ -25,6 +26,8 @@ export default function MainRoutes() {
             <AdminRoute exact path={Screens.ADMIN_NEWS} component={NewsListView} />
             <AdminRoute exact path={Screens.CREATE_UPDATE_NEWS} component={CreateOrUpdateNewsView} />
             <AdminRoute exact path={Screens.CREATE_UPDATE_USER} component={CreateOrUpdateUserView} />
+
+            <AdminRoute exact path={Screens.ADMIN_STATISTIC} component={StatisticListView} />
 
             {/* <AdminRoute exact path={Screens.ADMIN_STAFF} component={StaffListView} />
             <AdminRoute exact path={Screens.DETAIL_STAFF} component={DetailStaffView} />

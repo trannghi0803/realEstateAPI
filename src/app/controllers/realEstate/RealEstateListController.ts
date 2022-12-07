@@ -117,6 +117,20 @@ class RealEstateListController extends BaseController<RealEstateModel, RealEstat
         }
     }
 
+    onReset = async () => {
+        this.setModel({
+            totalCount: undefined,
+            pageNumber: 1,
+            pageSize: Constants.ROW_PER_PAGE,
+            searchText: '',
+            categoryFilter: undefined,
+            provinceFilter: undefined,
+            statusFilter: undefined,
+            renderKey: Date.now()
+        })
+        this.getPaged();
+    }
+
     getCategory = async () => {
         try {
             const result = await new CategoryService().getAll();

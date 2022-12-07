@@ -247,4 +247,7 @@ export default {
         CONTENT: "Nội dung",
         ORIGINAL_URL: "Liên kết bài viết gốc"
     },
+    Statistic: {
+        TITLE: "Quản lý thống kê",
+    }
 }

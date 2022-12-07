@@ -59,7 +59,7 @@ export default class CreateOrUpdateUserView extends BaseView<CreateOrUpdateUserC
         return (
             <Grid container spacing={3} key={this.model.renderKey}>
                 <Grid item xs={12} sm={6} className="title-screen">
-                    {"Thêm User"}
+                    {"Thêm tài khoản"}
                 </Grid>
                 <Grid item xs={12} sm={7}>
                     <ControlInput

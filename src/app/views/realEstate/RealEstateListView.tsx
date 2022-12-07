@@ -11,7 +11,7 @@ import { ControlAutocomplete, ControlCheckbox, ControlDatagrid, ControllChip, Co
 import { RealEstateListController } from "../../controllers/realEstate";
 import { RealEstateModel } from "../../models";
 import { RealEstateService } from "../../services";
-import { Status } from "../../../constants/Enums";
+import { RealEstateType, Status } from "../../../constants/Enums";
 import { GlobalState } from "../../../stores/GlobalState";
 import { Helpers } from "../../../commons/utils";
 
@@ -28,7 +28,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                 key={this.model.searchText}
                 searchName={this.model.searchText || ''}
                 onFilter={() => { this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25) }}
-                // onReset={() => { this.controller.onReset() }}
+                onReset={() => { this.controller.onReset() }}
                 onSearchText={(val) => {
                     this.setModel({ searchText: val });
                     this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
@@ -68,7 +68,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                         <ControlAutocomplete
                             containerClassName="mb-3 mt-1r"
                             key={this.model.statusFilter}
-                            label={"Loại bất động sản"}
+                            label={"Trạng thái"}
                             items={this.model.statusList || []}
                             value={this.model.statusFilter || ""}
                             onChangeValue={(value) => {
@@ -118,7 +118,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                     </Button>
                 }
                 {
-                    Number(params.row.status) === Status.Inactive || Number(params.row.status) === Status.Reject &&
+                    (Number(params.row.status) === Status.Inactive || Number(params.row.status) === Status.Reject) &&
                     <Button
                         variant="text"
                         className="d-block w-100 text-left"
@@ -145,7 +145,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                 index: (i + 1) + ((this.model.pageNumber || 1) - 1) * (this.model.pageSize || Constants.ROW_PER_PAGE),
                 id: el._id,
                 title: el.title,
-                price: el.price,
+                price: el.price === 0 ? "Thỏa thuận" : el.price,
                 area: el.area,
                 attributes: el.attributes,
                 images: el.images[0],
@@ -153,6 +153,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                 description: el.description,
                 //type: `${this.model.typeList?.find(item => Number(item.code) === el.type)?.name}`,
                 // time: `${start} - ${end}`,
+                type: el.type,
                 status: el.status,
                 provinceName: el.address?.provinceName,
                 action: el._id,
@@ -174,8 +175,11 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                     switch (params.value) {
                         // case Status.Active: color = 'approveColor'; text = Strings.Absent.APPROVED_LOG; break;
                         case Status.Active:
+                            (params.row.type === RealEstateType.Crawl) && (text = "Đã đăng - Crawl");
+                            (params.row.type === RealEstateType.Create) && (text = "Đã đăng - Admin");
+                            (params.row.type === RealEstateType.UserCreate) && (text = "Đã đăng - User");
+                            
                             color = 'approveColor';
-                            text = "Đã đăng";
                             break;
                         case Status.Inactive: color = 'waitingColor'; text = "Chờ duyệt"; break;
                         case Status.Reject: color = 'rejectColor'; text = "Từ chối"; break;

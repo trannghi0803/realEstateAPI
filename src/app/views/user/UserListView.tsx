@@ -5,8 +5,8 @@ import { UserModel } from "../../models";
 import { UserService } from "../../services";
 import { Button, Tooltip, Typography, Grid } from "@material-ui/core";
 import { GridCellParams, GridRowsProp, GridColDef } from "@material-ui/data-grid";
-import { ControlPopupMenu, ControlDatagrid } from "../../../components";
-import { Strings, Screens } from "../../../constants";
+import { ControlPopupMenu, ControlDatagrid, CustomSearchFilter } from "../../../components";
+import { Strings, Screens, Constants } from "../../../constants";
 import { Add } from "@material-ui/icons";
 import { Status, UserType } from "../../../constants/Enums";
 import { UserListController } from "../../controllers/user";
@@ -15,6 +15,24 @@ import { UserListController } from "../../controllers/user";
 export default class UserListView extends BaseView<UserListController, UserModel, UserService> {
     constructor(props: any) {
         super(props, UserListController, UserModel, UserService);
+    }
+
+    renderFormFilter = () => {
+        return (
+            <CustomSearchFilter
+                key={this.model.searchText}
+                searchName={this.model.searchText}
+                placeholder={Strings.Common.SEARCH}
+                onSearchText={(val) => {
+                    this.setModel({
+                        searchText: val.trim(),
+                        pageSize: Constants.ROW_PER_PAGE_25,
+                    });
+                    this.controller.getPaged();
+                }}
+            >
+            </CustomSearchFilter>
+        )
     }
 
     renderAction = (params: GridCellParams) => {
@@ -43,8 +61,8 @@ export default class UserListView extends BaseView<UserListController, UserModel
     renderTable() {
         const rows: GridRowsProp = this.model.userList?.map((el: any, i: number) => {
             return {
-                index: (i + 1),
-                id: el.id,
+                index: (i + 1) + ((this.model.pageNumber || 1) - 1) * (this.model.pageSize || Constants.ROW_PER_PAGE),
+                id: el._id,
                 userName: el.userName,
                 email: el.email,
                 phoneNumber: el.phoneNumber,
@@ -89,11 +107,14 @@ export default class UserListView extends BaseView<UserListController, UserModel
         ];
         return (
             <ControlDatagrid
-                // filterForm={this.renderFormFilter()}
+                filterForm={this.renderFormFilter()}
                 rows={rows}
                 columns={columns}
-                totalCount={this.model.totalCount}
-                isHidePagnation={true}
+                page={(this.model.pageNumber || 1) - 1 || 0}
+                pageSize={this.model.pageSize || 0}
+                rowCount={this.model.totalCount || 0}
+                onPageChange={(page) => this.controller.handleChangePage(page.page + 1, (this.model.pageSize || Constants.ROW_PER_PAGE))}
+                onPageSizeChange={(page) => { this.controller.handleChangePage(this.model.pageNumber || 1, page.pageSize) }}
             />
         );
     }

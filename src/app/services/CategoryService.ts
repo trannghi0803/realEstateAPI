@@ -10,6 +10,14 @@ class CategoryService extends BaseSevice {
         return result.data;
     }
 
+    public getPaged = async (data: any) => {
+        const result = await this.api.get({
+            path: Constants.ApiPath.CATEGORY_GET_PAGED,
+            data
+        });
+        return result.data;
+    }
+
     public getDetail = async (id: string) => {
         const result = await this.api.get({
             path: `${Constants.ApiPath.Category}/${id}`,

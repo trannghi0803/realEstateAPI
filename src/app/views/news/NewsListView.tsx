@@ -68,6 +68,7 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
                 title: el.title,
                 abstract: el.abstract,
                 content: el.content,
+                image: el.imageThumb,
                 action: el.id,
             }
         }) || [];
@@ -79,9 +80,17 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
                 width: 130, sortable: false,
             },
             { field: 'index', headerName: "#", width: 80, sortable: false },
+            {
+                field: 'image', headerName: Strings.RealEstate.IMAGE, width: 100, sortable: false,
+                renderCell: (params: GridCellParams) => {
+                    return (
+                        params.row.image ? <img className="imgItem" src={params.row.image} /> : <></>
+                    )
+                }
+            },
             { field: 'title', headerName: Strings.News.NAME, width: 220, sortable: false },
             {
-                field: 'abstract', headerName: Strings.News.ABSTRACT, width: 180, sortable: false,
+                field: 'abstract', headerName: Strings.News.ABSTRACT, width: 200, sortable: false,
                 renderCell: (params: GridCellParams) => {
                     return (
                         <Tooltip title={params.row.abstract} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
@@ -91,7 +100,7 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
                 }
             },
             {
-                field: 'content', headerName: Strings.News.CONTENT, width: 180, sortable: false,
+                field: 'content', headerName: Strings.News.CONTENT, width: 450, sortable: false,
                 renderCell: (params: GridCellParams) => {
                     return (
                         <Tooltip title={params.row.content} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>

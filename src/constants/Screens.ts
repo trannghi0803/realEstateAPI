@@ -34,6 +34,8 @@ const Screens = {
     ADMIN_NEWS: "/admin/news/list",
     CREATE_UPDATE_NEWS: "/admin/news/edit",
 
+    ADMIN_STATISTIC: "/admin/statistic/list",
+
 };
 
 export default Screens;

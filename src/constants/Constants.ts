@@ -61,6 +61,7 @@ const Constants = {
         USER_UPDATE: "/user/updateUser",
         USER_DELETE: "/user/deleteUser",
         Category: "/category",
+        CATEGORY_GET_PAGED: "/category/getPaged",
         REAL_ESTATE: "/realEstate",
         APPROVE_REAL_ESTATE: "/realEstate/approve",
         REJECT_REAL_ESTATE: "/realEstate/reject",

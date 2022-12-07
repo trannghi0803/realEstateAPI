@@ -219,6 +219,12 @@ export default function AdminLayout(props: IProps) {
                 iconName: "feed",
                 controller: Screens.ADMIN_NEWS
             },
+            {
+                id: "5",
+                tilte: Strings.Statistic.TITLE,
+                iconName: "feed",
+                controller: Screens.ADMIN_STATISTIC
+            },
 
         ]
         setMenu(menu);

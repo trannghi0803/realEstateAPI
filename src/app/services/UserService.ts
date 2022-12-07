@@ -11,9 +11,10 @@ class UserService extends BaseSevice {
         return result.data;
     }
 
-    public getPaged = async () => {
+    public getPaged = async (data?: any) => {
         const result = await this.api.get({
             path: Constants.ApiPath.User,
+            data
         });
         return result.data;
     }
