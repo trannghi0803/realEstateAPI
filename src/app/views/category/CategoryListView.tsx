@@ -62,8 +62,8 @@ export default class CategoryListView extends BaseView<CategoryListController, C
     renderTable() {
         const rows: GridRowsProp = this.model.categoryList?.map((el: any, i: number) => {
             return {
-                index: (i + 1),
-                id: el.id,
+                index: (i + 1) + ((this.model.pageNumber || 1) - 1) * (this.model.pageSize || Constants.ROW_PER_PAGE),
+                id: el._id,
                 name: el.name,
                 description: el.description,
                 type: `${this.model.typeList?.find(item => Number(item.code) === el.type)?.name}`,
@@ -98,8 +98,10 @@ export default class CategoryListView extends BaseView<CategoryListController, C
                 filterForm={this.renderFormFilter()}
                 rows={rows}
                 columns={columns}
-                totalCount={this.model.totalCount}
-                isHidePagnation={true}
+                pageSize={this.model.pageSize || 0}
+                rowCount={this.model.totalCount || 0}
+                onPageChange={(page) => this.controller.handleChangePage(page.page + 1, (this.model.pageSize || Constants.ROW_PER_PAGE))}
+                onPageSizeChange={(page) => { this.controller.handleChangePage(this.model.pageNumber || 1, page.pageSize) }}
             />
         );
     }

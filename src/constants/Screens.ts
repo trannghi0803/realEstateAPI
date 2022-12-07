@@ -24,6 +24,7 @@ const Screens = {
     //category
     ADMIN_CATEGORY: "/admin/category/list",
     CREATE_UPDATE_CATEGORY: "/admin/category/edit",
+    CREATE_UPDATE_USER: "/admin/user/edit",
 
     //realEstate
     ADMIN_REAL_ESTATE: "/admin/realEstate/list",
@@ -32,6 +33,8 @@ const Screens = {
     //news
     ADMIN_NEWS: "/admin/news/list",
     CREATE_UPDATE_NEWS: "/admin/news/edit",
+
+    ADMIN_STATISTIC: "/admin/statistic/list",
 
 };
 

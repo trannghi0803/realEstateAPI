@@ -7,10 +7,13 @@ import { GridCellParams, GridColDef, GridRowsProp } from "@material-ui/data-grid
 
 import BaseView from "../base/BaseView";
 import { Constants, Screens, Strings } from "../../../constants";
-import { ControlDatagrid, ControlPopupMenu, CustomSearchFilter } from "../../../components";
+import { ControlAutocomplete, ControlCheckbox, ControlDatagrid, ControllChip, ControlPopupMenu, CustomSearchFilter } from "../../../components";
 import { RealEstateListController } from "../../controllers/realEstate";
 import { RealEstateModel } from "../../models";
 import { RealEstateService } from "../../services";
+import { RealEstateType, Status } from "../../../constants/Enums";
+import { GlobalState } from "../../../stores/GlobalState";
+import { Helpers } from "../../../commons/utils";
 
 
 @observer
@@ -23,16 +26,74 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
         return (
             <CustomSearchFilter
                 key={this.model.searchText}
-                searchName={this.model.searchText}
-                placeholder={Strings.Common.SEARCH}
+                searchName={this.model.searchText || ''}
+                onFilter={() => { this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25) }}
+                onReset={() => { this.controller.onReset() }}
                 onSearchText={(val) => {
-                    this.setModel({
-                        searchText: val.trim(),
-                        pageSize: Constants.ROW_PER_PAGE_25,
-                    });
-                    this.controller.getPaged();
+                    this.setModel({ searchText: val });
+                    this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
                 }}
             >
+                <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <ControlAutocomplete
+                            containerClassName="mb-3 mt-1r"
+                            key={this.model.categoryFilter}
+                            label={"Loại bất động sản"}
+                            items={this.model.categoryList || []}
+                            value={this.model.categoryFilter}
+                            onChangeValue={(value) => {
+                                this.setModel({
+                                    categoryFilter: value,
+                                    renderKey: Date.now()
+                                });
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <ControlAutocomplete
+                            variant="outlined"
+                            label={Strings.RealEstate.CITY}
+                            items={this.model.provinceList || []}
+                            value={this.model.provinceFilter || ""}
+                            onChangeValue={(value) => {
+                                this.setModel({
+                                    provinceFilter: value,
+                                    renderKey: Date.now()
+                                })
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <ControlAutocomplete
+                            containerClassName="mb-3 mt-1r"
+                            key={this.model.statusFilter}
+                            label={"Trạng thái"}
+                            items={this.model.statusList || []}
+                            value={this.model.statusFilter || ""}
+                            onChangeValue={(value) => {
+                                this.setModel({
+                                    statusFilter: value,
+                                    renderKey: Date.now()
+                                });
+                            }}
+                        />
+                    </Grid>
+
+
+                    {/* <Grid item xs={6}>
+                        <ControlCheckbox
+                            label={"Trạng thái"}
+                            containerClassName="mr-3 w-40 d-inline-flex"
+                            value={this.model.terminatedFilter?.value || false}
+                            onChangeValue={(value) => {
+                                this.setModel({
+                                    terminatedFilter: { value: value === true ? Terminated.True : Terminated.False }
+                                })
+                            }}
+                        />
+                    </Grid> */}
+                </Grid>
             </CustomSearchFilter>
         )
     }
@@ -56,6 +117,24 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                         {Strings.Common.EDIT}
                     </Button>
                 }
+                {
+                    (Number(params.row.status) === Status.Inactive || Number(params.row.status) === Status.Reject) &&
+                    <Button
+                        variant="text"
+                        className="d-block w-100 text-left"
+                        onClick={() => this.controller.approve(`${params.value}`)}>
+                        {Strings.Common.APPROVE}
+                    </Button>
+                }
+                {
+                    Number(params.row.status) === Status.Inactive &&
+                    <Button
+                        variant="text"
+                        className="d-block w-100 text-left"
+                        onClick={() => this.controller.reject(`${params.value}`)}>
+                        {Strings.Common.REJECT}
+                    </Button>
+                }
             </ControlPopupMenu>
         )
     }
@@ -63,18 +142,21 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
     renderTable() {
         const rows: GridRowsProp = this.model.realEstateList?.map((el: any, i: number) => {
             return {
-                index: (i + 1),
-                id: el.id,
+                index: (i + 1) + ((this.model.pageNumber || 1) - 1) * (this.model.pageSize || Constants.ROW_PER_PAGE),
+                id: el._id,
                 title: el.title,
-                price: el.price,
+                price: el.price === 0 ? "Thỏa thuận" : el.price,
                 area: el.area,
                 attributes: el.attributes,
                 images: el.images[0],
-                category: this.model.categoryList?.find(e => e.id = el.category)?.name,
+                category: this.model.categoryList?.find(e => e.id === el.category)?.name,
                 description: el.description,
                 //type: `${this.model.typeList?.find(item => Number(item.code) === el.type)?.name}`,
                 // time: `${start} - ${end}`,
-                action: el.id,
+                type: el.type,
+                status: el.status,
+                provinceName: el.address?.provinceName,
+                action: el._id,
             }
         }) || [];
         const columns: GridColDef[] = [
@@ -82,9 +164,33 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                 field: 'action', headerAlign: 'left', align: 'left',
                 headerName: Strings.Common.ACTION,
                 renderCell: this.renderAction,
-                width: 130, sortable: false,
+                width: 90, sortable: false,
             },
-            { field: 'index', headerName: "#", width: 80, sortable: false },
+            { field: 'index', headerName: "#", width: 50, sortable: false },
+            {
+                field: 'status', headerName: Strings.User.STATUS, width: 180, sortable: false,
+                renderCell: (params: GridCellParams) => {
+                    let color = '';
+                    let text = '';
+                    switch (params.value) {
+                        // case Status.Active: color = 'approveColor'; text = Strings.Absent.APPROVED_LOG; break;
+                        case Status.Active:
+                            (params.row.type === RealEstateType.Crawl) && (text = "Đã đăng - Crawl");
+                            (params.row.type === RealEstateType.Create) && (text = "Đã đăng - Admin");
+                            (params.row.type === RealEstateType.UserCreate) && (text = "Đã đăng - User");
+                            
+                            color = 'approveColor';
+                            break;
+                        case Status.Inactive: color = 'waitingColor'; text = "Chờ duyệt"; break;
+                        case Status.Reject: color = 'rejectColor'; text = "Từ chối"; break;
+                    }
+                    return (
+                        <Grid>
+                            <button className={`${color} button-status button-table`}>{text}</button>
+                        </Grid>
+                    )
+                }
+            },
             {
                 field: 'images', headerName: Strings.RealEstate.IMAGE, width: 100, sortable: false,
                 renderCell: (params: GridCellParams) => {
@@ -93,8 +199,18 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                     )
                 }
             },
-            { field: 'title', headerName: Strings.RealEstate.NAME, width: 220, sortable: false },
+            {
+                field: 'title', headerName: Strings.RealEstate.NAME, width: 220, sortable: false,
+                renderCell: (params: GridCellParams) => {
+                    return (
+                        <Tooltip title={params.row.title} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                            <Typography className="MuiTypography-body1--custom">{params.row.title}</Typography>
+                        </Tooltip>
+                    )
+                }
+            },
             { field: 'category', headerName: Strings.RealEstate.CATEGORY, width: 180, sortable: false },
+            { field: 'provinceName', headerName: Strings.RealEstate.CITY, width: 180, sortable: false },
             { field: 'price', headerName: Strings.RealEstate.PRICE, width: 180, sortable: false },
             { field: 'area', headerName: Strings.RealEstate.AREA, width: 180, sortable: false },
             { field: 'attributes', headerName: Strings.RealEstate.ATTRIBUTE, width: 180, sortable: false },
@@ -115,18 +231,11 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                 filterForm={this.renderFormFilter()}
                 rows={rows}
                 columns={columns}
-                pageSize={this.model.pageSize}
-                onPageSizeChange={(newPageSize) => {
-                    console.log("newPageSize", newPageSize);
-                    this.setModel({
-                        ...this.model,
-                        pageSize: Number(newPageSize.pageSize)
-                    })
-                }}
-                rowsPerPageOptions={[5, 10, 20]}
-                pagination
-            // totalCount={this.model.totalCount}
-            // isHidePagnation={true}
+                page={(this.model.pageNumber || 1) - 1 || 0}
+                pageSize={this.model.pageSize || 0}
+                rowCount={this.model.totalCount || 0}
+                onPageChange={(page) => this.controller.handleChangePage(page.page + 1, (this.model.pageSize || Constants.ROW_PER_PAGE))}
+                onPageSizeChange={(page) => { this.controller.handleChangePage(this.model.pageNumber || 1, page.pageSize) }}
             />
         );
     }
@@ -134,7 +243,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
         return (
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} className="title-screen">
-                    {Strings.Category.TITLE_LIST}
+                    {Strings.RealEstate.TITLE_LIST}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     {
@@ -147,6 +256,46 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                         >
                             {Strings.Common.ADD_NEW}
                         </Button>
+                    }
+                </Grid>
+                <Grid item xs={12}>
+                    {
+                        (!Helpers.isNullOrEmpty(this.model.categoryFilter)) &&
+                        <ControllChip
+                            label={`${Strings.RealEstate.CATEGORY}: ${this.model.categoryList?.find(el => el.code === this.model.categoryFilter)?.name}`}
+                            onDelete={() => {
+                                this.setModel({
+                                    categoryFilter: undefined,
+                                });
+                                this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
+                            }}
+                        />
+                    }
+
+                    {
+                        (!Helpers.isNullOrEmpty(this.model.provinceFilter)) &&
+                        <ControllChip
+                            label={`${Strings.RealEstate.CITY}: ${this.model.provinceList?.find(el => el.code === this.model.provinceFilter)?.name}`}
+                            onDelete={() => {
+                                this.setModel({
+                                    provinceFilter: undefined,
+                                });
+                                this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
+                            }}
+                        />
+                    }
+                    
+                    {
+                        (!Helpers.isNullOrEmpty(this.model.statusFilter)) &&
+                        <ControllChip
+                            label={`Trạng thái: ${this.model.statusList?.find(el => el.code === this.model.statusFilter)?.name}`}
+                            onDelete={() => {
+                                this.setModel({
+                                    statusFilter: undefined,
+                                });
+                                this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
+                            }}
+                        />
                     }
                 </Grid>
                 <Grid item xs={12}>

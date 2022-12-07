@@ -1,15 +1,13 @@
 import moment from "moment";
 import { BaseController } from "../base";
-import { CategoryService, NewsService } from "../../services";
-import { Helpers, ICodename } from "../../../commons/utils";
+import { Helpers } from "../../../commons/utils";
 import { Strings } from "../../../constants";
-import { GlobalState } from "../../../stores/GlobalState";
-import { RealEstateType } from "../../../constants/Enums";
-import { NewsModel } from "../../models";
+import { UserModel } from "../../models";
+import { UserService } from "../../services";
 
-class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService> {
+class CreateOrUpdateUserController extends BaseController<UserModel, UserService> {
     constructor(props: any) {
-        super(props, NewsModel, NewsService);
+        super(props, UserModel, UserService);
     }
 
     async onStarted() {
@@ -19,7 +17,6 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
             if (id) {
                 await this.getDetail(id);
             }
-            
             this.hidePageLoading();
         } catch (error) {
             this.hidePageLoading();
@@ -31,16 +28,16 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
         try {
             this.showPageLoading();
             const data = await this.service.getDetail(id);
-
+            console.log("getDetail", data)
             this.setModel({
-                id: data._id,
-                title: { value: data.title },
-                abstract: { value: data.abstract },
-                content: { value: data.content},
-                imageThumb: data.imageThumb,
-                imageDisplay: [data.imageThumb],
-                slug: data.slug,
-                type: data.type,
+                id: data.user._id,
+                userName: { value: data.user.userName },
+                phoneNumber: { value: data.user.phoneNumber },
+                email: { value: data.user.email },
+                role: data.user.role,
+                status: data.user.status,
+                avatar: data.user.avatar,
+                imageDisplay: [data.user.avatar],
                 renderKey: Date.now()
             })
 
@@ -51,40 +48,61 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
         }
     }
 
-
     isCheckValidate() {
-        let checked = true;
-        if (Helpers.isNullOrEmpty(this.model.title?.value)) {
+        let isValid = true;
+        if (Helpers.isNullOrEmpty(this.model.userName?.value)) {
             this.setModel({
-                title: { error: Strings.Validation.REQUIRED }
+                userName: { error: Strings.Validation.REQUIRED }
             })
-            checked = false
+            isValid = false;
+        }
+        if (Helpers.isNullOrEmpty(this.model.phoneNumber?.value)) {
+            this.setModel({
+                phoneNumber: { error: Strings.Validation.REQUIRED }
+            })
+            isValid = false;
+        } else if (!Helpers.checkValidatePhone(this.model.phoneNumber?.value || '')) {
+            this.setModel({
+                phoneNumber: { error: Strings.Validation.PHONE_NUMBER }
+            })
+            isValid = false;
         }
 
-        return checked;
-    }
+        if (Helpers.isNullOrEmpty(this.model.email?.value)) {
+            this.setModel({
+                email: { error: Strings.Validation.REQUIRED }
+            })
+            isValid = false;
+        } else if (!Helpers.checkValidateEmail(this.model.email?.value)) {
+            this.setModel({
+                email: { error: Strings.Validation.EMAIL_ADDRESS }
+            })
+            isValid = false;
+        }
 
-    onCreateOrUpdateNews = async () => {
+        return isValid;
+    }
+    onCreateOrUpdateUser = async () => {
         try {
             if (!this.isCheckValidate()) {
                 return;
             }
             this.showPageLoading();
-
             let data: any = {
-                title: this.model.title?.value,
-                abstract: this.model.abstract?.value,
-                content: this.model.content?.value,
-                imageThumb: this.model.imageThumb
+                userName: this.model.userName?.value,
+                phoneNumber: this.model.phoneNumber?.value,
+                email: this.model.email?.value,
+                avatar: this.model.avatar,
+                role: this.model.role
             }
-            console.log("data", data);
             let result: any;
             if (Helpers.isNullOrEmpty(this.model.id)) {
-                result = await this.service.create(data);
+                result = await this.service.createUser(data);
+                console.log("result", result)
                 Helpers.showAlert(Strings.Message.CREATE_SUCCESS, 'success')
             } else {
                 data.id = this.model.id;
-                result = await this.service.update(data);
+                result = await this.service.updateUser(data);
                 Helpers.showAlert(Strings.Message.UPDATE_SUCCESS, 'success')
             }
             this.history.goBack();
@@ -100,7 +118,7 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
             if (e.target.files) {
                 this.showPageLoading();
                 var photos: any[] = [];
-                photos.push(...(this.model.imageThumb || []));
+                photos.push(...(this.model.avatar || []));
                 for (let i = 0; i < e.target.files.length; i++) {
                     if ((e.target.files[i].size / 1048576) > 2) {
                         Helpers.showAlert("Hình " + e.target.files[i].name + " đã vượt quá 2mb. vui lòng chọn hình khác!");
@@ -117,14 +135,6 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
                         const fileId: any = await this.service.uploadImage(e.target.files[i]);
                         // console.log("fileId", fileId);
                         photos.push(
-                            // {
-                            //     photoId: URL.createObjectURL(e.target.files[i]),
-                            //     displayOrder: 0,
-                            //     photo: {
-                            //         fileId: fileId.public_id,
-                            //         url: fileId.url
-                            //     }
-                            // }
                             fileId.url
                         );
                         console.timeEnd("res")
@@ -133,7 +143,7 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
 
                 this.setModel({
                     imageDisplay: photos,
-                    imageThumb: photos[0],
+                    avatar: photos[0],
                 })
                 this.hidePageLoading();
             }
@@ -147,8 +157,8 @@ class CreateOrUpdateNewsController extends BaseController<NewsModel, NewsService
     handleDeletePhoto = (index: number, id?: string) => {
         this.setModel({
             imageDisplay: [],
-            imageThumb: undefined,
+            avatar: undefined,
         })
     }
 }
-export default CreateOrUpdateNewsController;
+export default CreateOrUpdateUserController;

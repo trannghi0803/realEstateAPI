@@ -3,6 +3,7 @@ import AuthModel from "./AuthModel";
 import CategoryModel from "./CategoryModel";
 import NewsModel from "./NewsModel";
 import RealEstateModel from "./RealEstateModel";
+import StatisticModel from "./StatisticModel";
 import UserModel from "./UserModel";
 
 export {
@@ -10,5 +11,6 @@ export {
     UserModel,
     CategoryModel,
     RealEstateModel,
-    NewsModel
+    NewsModel,
+    StatisticModel
 };

@@ -51,9 +51,9 @@ export default class ProflieView extends BaseView<ProfileController, UserModel, 
                         </Grid>
                     </Grid>
                 </Paper>
-                {
+                {/* {
                     this.showModalChangePassword()
-                }
+                } */}
             </Grid>
         );
     }

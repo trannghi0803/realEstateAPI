@@ -24,6 +24,10 @@ class NewsModel extends BaseModel {
     public title?: IInput;
     public abstract?: IInput;
     public content?: IInput;
+    public imageThumb?: any;
+    public imageDisplay?: any;
+    public type?: number;
+    public slug?: string;
     
     public newsList?: any[] = [];
 }

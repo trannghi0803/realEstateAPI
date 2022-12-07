@@ -8,6 +8,7 @@ import { clearGlobalState, GlobalState } from "../../../stores/GlobalState";
 import { Helpers, IUserInfo } from "../../../commons/utils";
 import { Constants, Screens, Strings } from "../../../constants";
 import BaseService from '../../services/BaseService';
+import { UserType } from '../../../constants/Enums';
 
 class LoginController extends BaseController<AuthModel, AuthService> {
     constructor(props: any) {
@@ -43,10 +44,10 @@ class LoginController extends BaseController<AuthModel, AuthService> {
             this.showPageLoading();
 
             const data = {
-                // email: this.model.email?.value,
-                // password: this.model.password?.value
-                email: 'tranvannghi1998@gmail.com',
-                password: 'nghi1234'
+                email: this.model.email?.value,
+                password: this.model.password?.value
+                // email: 'tranvannghi1998@gmail.com',
+                // password: 'nghi1234'
             }
             const result = await this.service.login(data);
             if (result.statusCode === 200) {
@@ -60,6 +61,21 @@ class LoginController extends BaseController<AuthModel, AuthService> {
                 GlobalState.setUser(user);
                 GlobalState.setAuthenticateStatus(true);
                 GlobalState.setUserInfo(result.user);
+
+                if (result.user?.role === UserType.User) {
+                    const result = await new AuthService().logout();
+                    
+                        GlobalState.setAuthenticateStatus(false);
+                        sessionStorage.clear();
+                        // remove cookie 
+                        // const cookies = new Cookies();
+                        // cookies.remove(Constants.StorageKeys.FCM_TOKEN, { path: '/' });
+                        // cookies.remove(Constants.StorageKeys.TOKEN, { path: '/' });
+                        // clear Global State
+                        clearGlobalState();
+                        Helpers.showAlert("Bạn không có quyền truy cập. Vui lòng liên hệ quản trị viên để được hổ trợ!", "warning");
+                    
+                }
 
                 const targetScreen = (Helpers.isNullOrEmpty(GlobalState.targetScreen)) ? Screens.PROFILE : (GlobalState.targetScreen === "/") ? Screens.PROFILE : GlobalState.targetScreen;
                 this.history.push(targetScreen);

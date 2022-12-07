@@ -28,26 +28,40 @@ class CategoryListController extends BaseController<CategoryModel, CategoryServi
         }
     }
 
+    public handleChangePage = async (pageNumber: number, pageSize: number) => {
+        this.showPageLoading();
+        const page = Math.ceil((this.model.totalCount || 0) / (pageSize || 1)) || 1;
+        const pageNumberTemp = (pageNumber || 1) >= page ? page : (pageNumber || 1);
+        this.setModel({
+            pageNumber: pageNumberTemp,
+            pageSize
+        })
+        await this.getPaged()
+        this.hidePageLoading();
+    }
+
     public getPaged = async () => {
         try {
             this.showPageLoading();
-
-            const result = await this.service.getAll();
-            let categoryList: any = [];
-            let totalCount = 0;
-            result?.map((el: any, i: number) => {
-                categoryList.push({
-                    id: el._id,
-                    name: el.name,
-                    type: el.type,
-                    description: el.description,
-                })
-                totalCount++;
-            })
+            let data: any = {
+                pageNumber: this.model.pageNumber,
+                pageSize: this.model.pageSize,
+                name: this.model.searchText || undefined
+            }
+            const result = await this.service.getPaged(data);
             this.setModel({
-                categoryList,
-                totalCount
+                categoryList: result?.result,
+                totalCount: result.totalCount,
+                pageNumber: result.pageNumber,
+                pageSize: result.pageSize,
             })
+            let queryString = `&page=${this.model.pageNumber || 1}&pageSize=${this.model.pageSize || Constants.ROW_PER_PAGE}`;
+            if (!Helpers.isNullOrEmpty(this.model.searchText)) { queryString += `&searchText=${this.model.searchText}` }
+
+            this.history.replace({
+                pathname: Screens.ADMIN_CATEGORY,
+                search: queryString
+            });
 
             this.hidePageLoading();
 

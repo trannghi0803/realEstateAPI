@@ -139,7 +139,7 @@ const ControlDatagrid: React.FC<IProps> = (props: IProps) => {
                     pagination
                     key={renderKey}
                     disableColumnMenu
-                    paginationMode="client"
+                    paginationMode="server"
                     // style={{ color: "#80858d" }}
                     disableSelectionOnClick={true}
                     onCellValueChange={onCellEdit}

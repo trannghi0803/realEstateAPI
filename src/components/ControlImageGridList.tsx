@@ -79,7 +79,7 @@ export default function ControlImageGridList(props: Props) {
                                 style={{ width: "100%" }}
                                 className="MuiGridListTile-imgFullHeight"
                                 src={photo}
-                                alt={props.genKey || `${photo.displayOrder}${genKey}`}
+                                alt={props.genKey}
                                 onClick={() => window.open(`${photo}`, "_blank")}
                             />
                             <GridListTileBar

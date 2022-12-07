@@ -63,11 +63,12 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
     renderTable() {
         const rows: GridRowsProp = this.model.newsList?.map((el: any, i: number) => {
             return {
-                index: (i + 1),
-                id: el.id,
+                index: (i + 1) + ((this.model.pageNumber || 1) - 1) * (this.model.pageSize || Constants.ROW_PER_PAGE),
+                id: el._id,
                 title: el.title,
                 abstract: el.abstract,
                 content: el.content,
+                image: el.imageThumb,
                 action: el.id,
             }
         }) || [];
@@ -79,9 +80,17 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
                 width: 130, sortable: false,
             },
             { field: 'index', headerName: "#", width: 80, sortable: false },
+            {
+                field: 'image', headerName: Strings.RealEstate.IMAGE, width: 100, sortable: false,
+                renderCell: (params: GridCellParams) => {
+                    return (
+                        params.row.image ? <img className="imgItem" src={params.row.image} /> : <></>
+                    )
+                }
+            },
             { field: 'title', headerName: Strings.News.NAME, width: 220, sortable: false },
             {
-                field: 'abstract', headerName: Strings.News.ABSTRACT, width: 180, sortable: false,
+                field: 'abstract', headerName: Strings.News.ABSTRACT, width: 200, sortable: false,
                 renderCell: (params: GridCellParams) => {
                     return (
                         <Tooltip title={params.row.abstract} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
@@ -91,7 +100,7 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
                 }
             },
             {
-                field: 'content', headerName: Strings.News.CONTENT, width: 180, sortable: false,
+                field: 'content', headerName: Strings.News.CONTENT, width: 450, sortable: false,
                 renderCell: (params: GridCellParams) => {
                     return (
                         <Tooltip title={params.row.content} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
@@ -107,18 +116,11 @@ export default class NewsListView extends BaseView<NewsListController, NewsModel
                 filterForm={this.renderFormFilter()}
                 rows={rows}
                 columns={columns}
-                pageSize={this.model.pageSize}
-                onPageSizeChange={(newPageSize) => {
-                    console.log("newPageSize", newPageSize);
-                    this.setModel({
-                        ...this.model,
-                        pageSize: Number(newPageSize.pageSize)
-                    })
-                }}
-                rowsPerPageOptions={[5, 10, 20]}
-                pagination
-            // totalCount={this.model.totalCount}
-            // isHidePagnation={true}
+                totalCount={this.model.totalCount}
+                pageSize={this.model.pageSize || 0}
+                rowCount={this.model.totalCount || 0}
+                onPageChange={(page) => this.controller.handleChangePage(page.page + 1, (this.model.pageSize || Constants.ROW_PER_PAGE))}
+                onPageSizeChange={(page) => { this.controller.handleChangePage(this.model.pageNumber || 1, page.pageSize) }}
             />
         );
     }

@@ -414,7 +414,15 @@ const Helpers = {
                 title = Strings.User.TITLE;
                 break;
             }
+            case Screens.CREATE_UPDATE_USER: {
+                title = Strings.User.TITLE;
+                break;
+            }
             case Screens.ADMIN_CATEGORY: {
+                title = Strings.Category.TITLE;
+                break;
+            }
+            case Screens.CREATE_UPDATE_CATEGORY: {
                 title = Strings.Category.TITLE;
                 break;
             }
@@ -422,7 +430,15 @@ const Helpers = {
                 title = Strings.RealEstate.TITLE;
                 break;
             }
+            case Screens.CREATE_UPDATE_REAL_ESTATE: {
+                title = Strings.RealEstate.TITLE;
+                break;
+            }
             case Screens.ADMIN_NEWS: {
+                title = Strings.News.TITLE;
+                break;
+            }
+            case Screens.CREATE_UPDATE_NEWS: {
                 title = Strings.News.TITLE;
                 break;
             }

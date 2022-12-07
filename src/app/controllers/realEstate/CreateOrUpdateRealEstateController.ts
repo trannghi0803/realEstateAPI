@@ -52,6 +52,7 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
                 images: data.images,
                 type: data.type,
                 address: data.address,
+                isHighLight: data.isHighLight,
                 renderKey: Date.now()
             })
 
@@ -139,6 +140,7 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
                 categoryList.push({
                     code: el._id,
                     name: el.name,
+                    group: el.type,
                 })
             })
             this.setModel({
@@ -186,9 +188,10 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
 
             let data: any = {
                 category: this.model.category?.value,
+                categoryType: this.model.categoryList?.find(c => c.code === this.model.category?.value)?.group,
                 title: this.model.title?.value,
-                price: this.model.price?.value,
-                area: this.model.area?.value,
+                price: Number(this.model.price?.value),
+                area: Number(this.model.area?.value),
                 attributes: this.model.attributes?.value,
                 description: this.model.description,
                 images: this.model.images,
@@ -202,7 +205,7 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
                     addressLine: this.model.address?.addressLine || ""
                 },
                 type: RealEstateType.Create,
-                isHighLight: false,
+                isHighLight: this.model.isHighLight || false,
             }
             console.log("data", data);
             let result: any;
@@ -225,6 +228,7 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
     handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
             if (e.target.files) {
+                this.showPageLoading();
                 var photos: any[] = [];
                 photos.push(...(this.model.images || []));
                 this.setModel({ isLoadingImages: true })
@@ -235,6 +239,7 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
                             isLoadingImages: false,
                         })
                         e.target.value = '';
+                        this.hidePageLoading();
                         return
                     }
                     if (e.target.files[i].type !== "image/png" && e.target.files[i].type !== "image/gif" && e.target.files[i].type !== "image/jpeg") {
@@ -243,6 +248,7 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
                             isLoadingImages: false,
                         })
                         e.target.value = '';
+                        this.hidePageLoading();
                         return
                     } else {
                         // if ((e.target.files[i].size / 1048576) > 1) {
@@ -267,8 +273,10 @@ class CreateOrUpdateRealEstateController extends BaseController<RealEstateModel,
                 this.setModel({
                     images: photos,
                 })
+                this.hidePageLoading();
             }
         } catch (error) {
+            this.hidePageLoading();
             console.log("error", error)
             Helpers.showAlert(`${error}`);
             this.setModel({

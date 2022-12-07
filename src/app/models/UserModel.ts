@@ -18,6 +18,17 @@ class UserModel extends BaseModel {
     public totalCount?: number;
     public pageSize?: number = Constants.ROW_PER_PAGE;
     public searchText?: string;
+
+    public userList?: any[]=[];
+    userName?: IInput;
+    email?: IInput;
+    phoneNumber?: IInput;
+    avatar?: any
+    id?: string;
+    imgUrl?: any;
+    status?: string;
+    role?: number;
+    imageDisplay?: any;
 }
 
 export default UserModel;

@@ -172,7 +172,13 @@ export default {
     },
 
     User: {
-        TITLE: "Quản lý tài khoản"
+        TITLE: "Quản lý tài khoản",
+        TITLE_LIST: "Danh sách tài khỏan",
+        EMAIL: "Email",
+        PHONE_NUMBER: "Số điện thoại",
+        USER_NAME: "Tên tài khoản", 
+        ROLE: "Quyền",
+        STATUS: "Trạng thái",
     },
 
     ProfileInfo: {
@@ -222,7 +228,7 @@ export default {
         TITLE_LIST: "Danh sách bài đăng",
         PRICE: "Giá",
         NAME: 'Tiêu đề',
-        AREA: "Diện tích",
+        AREA: "Diện tích(m2)",
         ATTRIBUTE: "Đặc điểm",
         CATEGORY: "Loại bất động sản",
         DESCRIPTION: "Mô tả",
@@ -230,7 +236,8 @@ export default {
         CITY: "Tỉnh/Thành phố",
         DISTRICT: "Quận/Huyện",
         WARD: "Phường/Xã",
-        ADDRESS_LINE: "chi tiết địa chỉ"
+        ADDRESS_LINE: "Chi tiết địa chỉ",
+        IS_HIGHLIGHT: "Bài đăng nổi bậc"
     },
     News: {
         TITLE: "Tin tức bất động sản",
@@ -238,5 +245,9 @@ export default {
         NAME: 'Tiêu đề',
         ABSTRACT: "Tóm tắt",
         CONTENT: "Nội dung",
+        ORIGINAL_URL: "Liên kết bài viết gốc"
+    },
+    Statistic: {
+        TITLE: "Quản lý thống kê",
     }
 }
