@@ -442,6 +442,10 @@ const Helpers = {
                 title = Strings.News.TITLE;
                 break;
             }
+            case Screens.ADMIN_STATISTIC: {
+                title = Strings.Statistic.TITLE;
+                break;
+            }
 
         }
         return title;

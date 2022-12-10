@@ -10,7 +10,20 @@ class StatisticModel extends BaseModel {
     public pageSize?: number = Constants.ROW_PER_PAGE;
     public searchText?: string;
 
-    public data?: any;
+    public data?: any[] = [];
+    public realEstateByCategoryList?: any[] = [];
+    public realEstateByRegionList?: any[] = [];
+    public areaByCategoryList?: any[] = [];
+    public realEstateByMonthList?: any[] = [];
+
+    public realEstateByCategoryTimeStart?: any;
+    public realEstateByCategoryTimeEnd?: any;
+
+    public realEstateByRegionTimeStart?: any;
+    public realEstateByRegionTimeEnd?: any;
+
+    public areaByCategoryTimeStart?: any;
+    public areaByCategoryTimeEnd?: any;
 }
 
 export default StatisticModel;
