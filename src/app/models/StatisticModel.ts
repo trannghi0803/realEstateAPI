@@ -13,13 +13,18 @@ class StatisticModel extends BaseModel {
     
     public data?: any[] = [];
     public realEstateByCategoryList?: any[] = [];
+    public realEstateByRentCategoryList?: any[] = [];
     public realEstateByRegionList?: any[] = [];
     public areaByCategoryList?: any[] = [];
+    public areaByRentCategoryList?: any[] = [];
     public realEstateByMonthList?: any[] = [];
     
     public realEstateByCategoryTimeStart?: any;
     public realEstateByCategoryTimeEnd?: any;
     public realEstateByCategoryType?: IInput
+
+    public realEstateByRentCategoryTimeStart?: any;
+    public realEstateByRentCategoryTimeEnd?: any;
     
     public realEstateByRegionTimeStart?: any;
     public realEstateByRegionTimeEnd?: any;

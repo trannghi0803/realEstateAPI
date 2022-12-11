@@ -69,10 +69,12 @@ const Constants = {
         NEWS_GET_PAGED: "/news/getPaged",
 
         COUNT_BY_CATEGORY: "/statistic/countByCategory",
+        COUNT_BY_RENT_CATEGORY: "/statistic/countByRentCategory",
         COUNT_BY_REGION: "/statistic/countByRegion",
         COUNT_BY_USER: "/statistic/countByUser",
         COUNT_BY_CREATE_TIME: "/statistic/countByCreateTime",
         COUNT_AREA_BY_CATEGORY: "/statistic/countAreaByCategory",
+        COUNT_AREA_BY_RENT_CATEGORY: "/statistic/countAreaByRentCategory",
 
         ADDRESS: {
             GET_PROVINCE: "/Address/getProvinces",

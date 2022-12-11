@@ -18,10 +18,10 @@ export default class StatisticListView extends BaseView<StatisticListController,
     }
 
     public renderPage() {
-       
+
         return (
             <Grid container spacing={2}>
-                <Grid container spacing={2} md={6} className="mt-3">
+                <Grid container spacing={2} md={12} xl={12} className="mt-3">
                     <p className="titleChart"> {"Thống kê bất động sản theo loại"}</p>
                     <Grid container xs={12} md={12} spacing={2}>
                         <Grid item xs={12} md={4}>
@@ -77,16 +77,104 @@ export default class StatisticListView extends BaseView<StatisticListController,
                             </Button>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Chart
-                            style={{ marginLeft: "-6%" }}
-                            chartType="PieChart"
-                            data={this.model?.realEstateByCategoryList}
-                            width={"100%"}
-                            height={"400px"}
-                        />
+                    <Grid container xs={12}>
+                        <Grid item xs={12} md={6}>
+                            <Chart
+                                // style={{ marginLeft: "-6%" }}
+                                chartType="PieChart"
+                                data={this.model?.realEstateByCategoryList}
+                                width={"100%"}
+                                height={"400px"}
+                                options={{
+                                    title: "Bất động sản mua bán",
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Chart
+                                // style={{ marginLeft: "-6%" }}
+                                chartType="PieChart"
+                                data={this.model?.realEstateByRentCategoryList}
+                                width={"100%"}
+                                height={"400px"}
+                                options={{
+                                    title: "Bất động sản cho thuê",
+                                }}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
+
+                <Grid container spacing={2} md={12} xl={12} className="mt-3">
+                    <p className="titleChart"> {"Thống kê diện tích bất động sản theo loại"}</p>
+                    <Grid container xs={12} md={12} spacing={2}>
+                        <Grid item xs={12} md={4}>
+                            <ControlDateTimePicker
+                                size="small"
+                                variant="outlined"
+                                // containerClassName="w-50"
+                                label={"Thời gian bắt đầu"}
+                                value={this.model.areaByCategoryTimeStart || null}
+                                onDateChange={(value) => {
+                                    this.setModel({
+                                        areaByCategoryTimeStart: value
+                                    })
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <ControlDateTimePicker
+                                size="small"
+                                variant="outlined"
+                                // containerClassName="w-50"
+                                minDate={this.model.areaByCategoryTimeStart}
+                                label={"Thời gian kết thúc"}
+                                value={this.model.areaByCategoryTimeEnd || null}
+                                onDateChange={(value) => {
+                                    this.setModel({
+                                        areaByCategoryTimeEnd: value
+                                    })
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={() => this.controller.countAreaByCategory()}
+                            >
+                                {"Thống kê"}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Grid container xs={12} md={12}>
+                        <Grid item xs={12} md={6}>
+                            <Chart
+                                // style={{ marginLeft: "-6%" }}
+                                chartType="PieChart"
+                                data={this.model?.areaByCategoryList}
+                                width={"100%"}
+                                height={"400px"}
+                                options={{
+                                    title: "Bất động sản mua bán",
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Chart
+                                // style={{ marginLeft: "-6%" }}
+                                chartType="PieChart"
+                                data={this.model?.areaByRentCategoryList}
+                                width={"100%"}
+                                height={"400px"}
+                                options={{
+                                    title: "Bất động sản cho thuê",
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+
                 <Grid container spacing={2} md={6} className="mt-3">
                     <p className="titleChart"> {"Thống kê bất động sản khu vực (top 10)"}</p>
                     <Grid container xs={12} md={12} spacing={2}>
@@ -144,62 +232,10 @@ export default class StatisticListView extends BaseView<StatisticListController,
                         />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} md={6} className="mt-3">
-                    <p className="titleChart"> {"Thống kê diện tích bất động sản theo loại"}</p>
-                    <Grid container xs={12} md={12} spacing={2}>
-                        <Grid item xs={12} md={4}>
-                            <ControlDateTimePicker
-                                size="small"
-                                variant="outlined"
-                                // containerClassName="w-50"
-                                label={"Thời gian bắt đầu"}
-                                value={this.model.areaByCategoryTimeStart || null}
-                                onDateChange={(value) => {
-                                    this.setModel({
-                                        areaByCategoryTimeStart: value
-                                    })
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <ControlDateTimePicker
-                                size="small"
-                                variant="outlined"
-                                // containerClassName="w-50"
-                                minDate={this.model.areaByCategoryTimeStart}
-                                label={"Thời gian kết thúc"}
-                                value={this.model.areaByCategoryTimeEnd || null}
-                                onDateChange={(value) => {
-                                    this.setModel({
-                                        areaByCategoryTimeEnd: value
-                                    })
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={() => this.controller.countAreaByCategory()}
-                            >
-                                {"Thống kê"}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Chart
-                            style={{ marginLeft: "-6%" }}
-                            chartType="PieChart"
-                            data={this.model?.areaByCategoryList}
-                            width={"100%"}
-                            height={"400px"}
-                        />
-                    </Grid>
-                </Grid>
 
                 <Grid container spacing={2} md={6} className="mt-3">
                     <p className="titleChart"> {"Thống kê bất động sản theo các tháng trong năm"}</p>
-                    
+
                     <Grid item xs={12}>
                         <Chart
                             chartType="Bar"

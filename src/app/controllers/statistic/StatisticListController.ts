@@ -18,6 +18,9 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
                 realEstateByCategoryTimeStart: Date.now(),
                 realEstateByCategoryTimeEnd: Date.now(),
 
+                // realEstateByRentCategoryTimeStart: Date.now(),
+                // realEstateByRentCategoryTimeEnd: Date.now(),
+
                 realEstateByRegionTimeStart: Date.now(),
                 realEstateByRegionTimeEnd: Date.now(),
 
@@ -28,6 +31,7 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
             await this.countAreaByCategory();
             await this.countByCategory();
             await this.countByRegion();
+            // await this.countByRentCategory();
             this.hidePageLoading();
         } catch (error) {
 
@@ -41,17 +45,27 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
                 startTime: moment(this.model.realEstateByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
                 endTime: moment(this.model.realEstateByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix()
             }
-            const result = await this.service.countRealEstateByCategory(request);
-            let realEstateByCategoryList: any[] = [
-                ["category", "Count by category"]
+            const sell = await this.service.countRealEstateByCategory(request);
+            const rent = await this.service.countRealEstateByRentCategory(request);
+            let realEstateByRentCategoryList: any[] = [
+                ["category", "Count by rent category"]
             ];
-            result?.map((el: any) => {
+            rent?.map((el: any) => {
+                realEstateByRentCategoryList.push([
+                    el.name, el.count
+                ]);
+            })
+            let realEstateByCategoryList: any[] = [
+                ["category", "Count by sell category"]
+            ];
+            sell?.map((el: any) => {
                 realEstateByCategoryList.push([
                     el.name, el.count
                 ]);
             })
             this.setModel({
-                realEstateByCategoryList
+                realEstateByCategoryList,
+                realEstateByRentCategoryList
             })
             // console.log("realEstateByCategoryList", realEstateByCategoryList)
             this.hidePageLoading();
@@ -61,6 +75,34 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
             this.handleException(error)
         }
     }
+
+    // countByRentCategory = async () => {
+    //     try {
+    //         this.showPageLoading();
+    //         let request = {
+    //             startTime: moment(this.model.realEstateByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
+    //             endTime: moment(this.model.realEstateByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix()
+    //         }
+    //         const result = await this.service.countRealEstateByRentCategory(request);
+    //         let realEstateByRentCategoryList: any[] = [
+    //             ["category", "Count by category"]
+    //         ];
+    //         result?.map((el: any) => {
+    //             realEstateByRentCategoryList.push([
+    //                 el.name, el.count
+    //             ]);
+    //         })
+    //         this.setModel({
+    //             realEstateByRentCategoryList
+    //         })
+    //         // console.log("realEstateByCategoryList", realEstateByCategoryList)
+    //         this.hidePageLoading();
+    //     } catch (error) {
+    //         this.hidePageLoading();
+    //         console.log("error", error)
+    //         this.handleException(error)
+    //     }
+    // }
 
     countByRegion = async () => {
         try {
@@ -97,17 +139,27 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
                 startTime: moment(this.model.areaByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
                 endTime: moment(this.model.areaByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
             }
-            const result = await this.service.countAreaByCategory(request);
+            const sell = await this.service.countAreaByCategory(request);
+            const rent = await this.service.countAreaByRentCategory(request);
             let areaByCategoryList: any[] = [
                 ["area", "Count by category"]
             ];
-            result?.map((el: any) => {
+            sell?.map((el: any) => {
                 areaByCategoryList.push([
                     el.name, el.count
                 ]);
             })
+            let areaByRentCategoryList: any[] = [
+                ["area", "Count by category"]
+            ];
+            rent?.map((el: any) => {
+                areaByRentCategoryList.push([
+                    el.name, el.count
+                ]);
+            })
             this.setModel({
-                areaByCategoryList
+                areaByCategoryList,
+                areaByRentCategoryList
             })
             // console.log("areaByCategoryList", areaByCategoryList)
             this.hidePageLoading();

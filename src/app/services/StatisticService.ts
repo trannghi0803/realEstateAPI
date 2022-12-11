@@ -11,6 +11,14 @@ class StatisticService extends BaseSevice {
         return result.data;
     }
 
+    public countRealEstateByRentCategory = async (data?: any) => {
+        const result = await this.api.get({
+            path: Constants.ApiPath.COUNT_BY_RENT_CATEGORY,
+            query: data
+        });
+        return result.data;
+    }
+
     public countRealEstateByRegion = async (data?: any) => {
         const result = await this.api.get({
             path: Constants.ApiPath.COUNT_BY_REGION,
@@ -22,6 +30,14 @@ class StatisticService extends BaseSevice {
     public countAreaByCategory = async (data?: any) => {
         const result = await this.api.get({
             path: Constants.ApiPath.COUNT_AREA_BY_CATEGORY,
+            query: data
+        });
+        return result.data;
+    }
+
+    public countAreaByRentCategory = async (data?: any) => {
+        const result = await this.api.get({
+            path: Constants.ApiPath.COUNT_AREA_BY_RENT_CATEGORY,
             query: data
         });
         return result.data;

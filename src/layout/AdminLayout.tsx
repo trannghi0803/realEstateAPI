@@ -222,7 +222,7 @@ export default function AdminLayout(props: IProps) {
             {
                 id: "5",
                 tilte: Strings.Statistic.TITLE,
-                iconName: "feed",
+                iconName: "poll",
                 controller: Screens.ADMIN_STATISTIC
             },
 
