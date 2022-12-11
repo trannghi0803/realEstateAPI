@@ -164,7 +164,7 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                 field: 'action', headerAlign: 'left', align: 'left',
                 headerName: Strings.Common.ACTION,
                 renderCell: this.renderAction,
-                width: 90, sortable: false,
+                width: 130, sortable: false,
             },
             { field: 'index', headerName: "#", width: 50, sortable: false },
             {
@@ -259,6 +259,18 @@ export default class RealEstateListView extends BaseView<RealEstateListControlle
                     }
                 </Grid>
                 <Grid item xs={12}>
+                    {
+                        (!Helpers.isNullOrEmpty(this.model.searchText)) &&
+                        <ControllChip
+                            label={`${Strings.RealEstate.NAME}: ${this.model.searchText}`}
+                            onDelete={() => {
+                                this.setModel({
+                                    searchText: undefined,
+                                });
+                                this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
+                            }}
+                        />
+                    }
                     {
                         (!Helpers.isNullOrEmpty(this.model.categoryFilter)) &&
                         <ControllChip

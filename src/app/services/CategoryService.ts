@@ -13,7 +13,7 @@ class CategoryService extends BaseSevice {
     public getPaged = async (data: any) => {
         const result = await this.api.get({
             path: Constants.ApiPath.CATEGORY_GET_PAGED,
-            data
+            query: data
         });
         return result.data;
     }

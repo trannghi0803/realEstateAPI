@@ -53,6 +53,20 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 }}
                             />
                         </Grid>
+                        {/* <Grid item xs={12} md={4}>
+                            <ControlAutocomplete
+                                variant={"outlined"}
+                                label={Strings.Category.TYPE}
+                                items={this.model.typeList || []}
+                                key={`${this.model.realEstateByCategoryType?.value}`}
+                                value={`${this.model.realEstateByCategoryType?.value}`}
+                                onChangeValue={(value) => {
+                                    this.setModel({
+                                        realEstateByCategoryType: { value }
+                                    })
+                                }}
+                            />
+                        </Grid> */}
                         <Grid item xs={12} md={4}>
                             <Button
                                 color="primary"

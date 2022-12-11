@@ -17,15 +17,16 @@ class CategoryModel extends BaseModel {
     public type?: IInput;
     public typeList?: ICodename[] = [
         {
-            code: CategoryType.Sell,
+            code: `${CategoryType.Sell}`,
             name: "Nhà đất bán"
         },
         {
-            code: CategoryType.Rent,
+            code: `${CategoryType.Rent}`,
             name: "Nhà đất cho thuê"
         }
     ]
     public categoryList?: any[] = []
+    public typeFilter?: IInput
 }
 
 export default CategoryModel;

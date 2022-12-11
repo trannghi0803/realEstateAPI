@@ -33,7 +33,7 @@ export default class CreateOrUpdateCategoryView extends BaseView<CreateOrUpdateC
                         label={Strings.Category.TYPE}
                         items={this.model.typeList || []}
                         key={this.model.type?.value}
-                        value={this.model.type?.value || ""}
+                        value={this.model.type?.value}
                         onChangeValue={(value) => {
                             this.setModel({
                                 type: { value }

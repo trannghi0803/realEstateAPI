@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import moment from 'moment';
+import Helpers from '../../../commons/utils/Helpers';
 import { StatisticModel } from "../../models";
 import { StatisticService } from "../../services";
 import { BaseController } from "../base";
@@ -34,100 +35,124 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
     }
 
     countByCategory = async () => {
-        this.showPageLoading();
-        let request = {
-            startTime: moment(this.model.realEstateByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
-            endTime: moment(this.model.realEstateByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix()
+        try {
+            this.showPageLoading();
+            let request = {
+                startTime: moment(this.model.realEstateByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
+                endTime: moment(this.model.realEstateByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix()
+            }
+            const result = await this.service.countRealEstateByCategory(request);
+            let realEstateByCategoryList: any[] = [
+                ["category", "Count by category"]
+            ];
+            result?.map((el: any) => {
+                realEstateByCategoryList.push([
+                    el.name, el.count
+                ]);
+            })
+            this.setModel({
+                realEstateByCategoryList
+            })
+            // console.log("realEstateByCategoryList", realEstateByCategoryList)
+            this.hidePageLoading();
+        } catch (error) {
+            this.hidePageLoading();
+            console.log("error", error)
+            this.handleException(error)
         }
-        const result = await this.service.countRealEstateByCategory(request);
-        let realEstateByCategoryList: any[] = [
-            ["category", "Count by category"]
-        ];
-        result?.map((el: any) => {
-            realEstateByCategoryList.push([
-                el.name, el.count
-            ]);
-        })
-        this.setModel({
-            realEstateByCategoryList
-        })
-        // console.log("realEstateByCategoryList", realEstateByCategoryList)
-        this.hidePageLoading();
     }
 
     countByRegion = async () => {
-        this.showPageLoading();
-        let request = {
-            startTime: moment(this.model.realEstateByRegionTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
-            endTime: moment(this.model.realEstateByRegionTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
+        try {
+            this.showPageLoading();
+            let request = {
+                startTime: moment(this.model.realEstateByRegionTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
+                endTime: moment(this.model.realEstateByRegionTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
+            }
+            const result = await this.service.countRealEstateByRegion(request);
+            let realEstateByRegionList: any[] = [
+                ["Region", "Số bài đăng"]
+            ];
+            result?.map((el: any) => {
+                realEstateByRegionList.push([
+                    el._id, el.count
+                ]);
+            })
+            this.setModel({
+                realEstateByRegionList
+            })
+            // console.log("realEstateByRegionList", realEstateByRegionList)
+            this.hidePageLoading();
+        } catch(error) {
+            this.hidePageLoading();
+            console.log("error", error)
+            this.handleException(error)
         }
-        const result = await this.service.countRealEstateByRegion(request);
-        let realEstateByRegionList: any[] = [
-            ["Region", "Số bài đăng"]
-        ];
-        result?.map((el: any) => {
-            realEstateByRegionList.push([
-                el._id, el.count
-            ]);
-        })
-        this.setModel({
-            realEstateByRegionList
-        })
-        // console.log("realEstateByRegionList", realEstateByRegionList)
-        this.hidePageLoading();
     }
 
     countAreaByCategory = async () => {
-        this.showPageLoading();
-        let request = {
-            startTime: moment(this.model.areaByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
-            endTime: moment(this.model.areaByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
+        try {
+            this.showPageLoading();
+            let request = {
+                startTime: moment(this.model.areaByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
+                endTime: moment(this.model.areaByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
+            }
+            const result = await this.service.countAreaByCategory(request);
+            let areaByCategoryList: any[] = [
+                ["area", "Count by category"]
+            ];
+            result?.map((el: any) => {
+                areaByCategoryList.push([
+                    el.name, el.count
+                ]);
+            })
+            this.setModel({
+                areaByCategoryList
+            })
+            // console.log("areaByCategoryList", areaByCategoryList)
+            this.hidePageLoading();
+        } catch (error) {
+            this.hidePageLoading();
+            console.log("error", error)
+            this.handleException(error)
         }
-        const result = await this.service.countAreaByCategory(request);
-        let areaByCategoryList: any[] = [
-            ["area", "Count by category"]
-        ];
-        result?.map((el: any) => {
-            areaByCategoryList.push([
-                el.name, el.count
-            ]);
-        })
-        this.setModel({
-            areaByCategoryList
-        })
-        // console.log("areaByCategoryList", areaByCategoryList)
-        this.hidePageLoading();
     }
 
     countByMonthCreateTime = async () => {
-        this.showPageLoading();
-        const result = await this.service.countByMonthCreateTime();
-        let realEstateByMonthList: any[] = [
-            ["Bài đăng theo tháng(T: Tháng)", ""],
-            ["T1", result?.find((el: any) => Number(el._id) === 1)?.count || 0],
-            ["T2", result?.find((el: any) => Number(el._id) === 2)?.count || 0],
-            ["T3", result?.find((el: any) => Number(el._id) === 3)?.count || 0],
-            ["T4", result?.find((el: any) => Number(el._id) === 4)?.count || 0],
-            ["T5", result?.find((el: any) => Number(el._id) === 5)?.count || 0],
-            ["T6", result?.find((el: any) => Number(el._id) === 6)?.count || 0],
-            ["T7", result?.find((el: any) => Number(el._id) === 7)?.count || 0],
-            ["T8", result?.find((el: any) => Number(el._id) === 8)?.count || 0],
-            ["T9", result?.find((el: any) => Number(el._id) === 9)?.count || 0],
-            ["T10", result?.find((el: any) => Number(el._id) === 10)?.count || 0],
-            ["T11", result?.find((el: any) => Number(el._id) === 11)?.count || 0],
-            ["T12", result?.find((el: any) => Number(el._id) === 12)?.count || 0],
-        ];
-        // result?.map((el: any) => {
-            // realEstateByMonthList.push([
-            //     el._id, el.count
-            // ]);
-           
-        // })
-        this.setModel({
-            realEstateByMonthList
-        })
-        // console.log("realEstateByMonthList", realEstateByMonthList)
-        this.hidePageLoading();
+        try {
+            this.showPageLoading();
+            const result = await this.service.countByMonthCreateTime();
+            let realEstateByMonthList: any[] = [
+                ["Bài đăng theo tháng(T: Tháng)", ""],
+                ["T1", result?.find((el: any) => Number(el._id) === 1)?.count || 0],
+                ["T2", result?.find((el: any) => Number(el._id) === 2)?.count || 0],
+                ["T3", result?.find((el: any) => Number(el._id) === 3)?.count || 0],
+                ["T4", result?.find((el: any) => Number(el._id) === 4)?.count || 0],
+                ["T5", result?.find((el: any) => Number(el._id) === 5)?.count || 0],
+                ["T6", result?.find((el: any) => Number(el._id) === 6)?.count || 0],
+                ["T7", result?.find((el: any) => Number(el._id) === 7)?.count || 0],
+                ["T8", result?.find((el: any) => Number(el._id) === 8)?.count || 0],
+                ["T9", result?.find((el: any) => Number(el._id) === 9)?.count || 0],
+                ["T10", result?.find((el: any) => Number(el._id) === 10)?.count || 0],
+                ["T11", result?.find((el: any) => Number(el._id) === 11)?.count || 0],
+                ["T12", result?.find((el: any) => Number(el._id) === 12)?.count || 0],
+            ];
+            // result?.map((el: any) => {
+                // realEstateByMonthList.push([
+                //     el._id, el.count
+                // ]);
+               
+            // })
+            this.setModel({
+                realEstateByMonthList
+            })
+            // console.log("realEstateByMonthList", realEstateByMonthList)
+            this.hidePageLoading();
+        } catch (error) {
+            this.hidePageLoading();
+            console.log("error", error)
+            this.handleException(error)
+        }
     }
 
     

@@ -91,20 +91,37 @@ export default class CreateOrUpdateRealEstateView extends BaseView<CreateOrUpdat
                         }}
                     />
                 </Grid>
-                <Grid item xs={12} sm={7}>
-                    <ControlInput
-                        required
-                        type="number"
-                        label={Strings.RealEstate.PRICE}
-                        defaultValue={this.model.price?.value || ""}
-                        onChangeValue={(value) => {
-                            this.setModel({
-                                price: { value }
-                            })
-                        }}
-                        errorMessage={this.model.price?.error}
-                    />
-                </Grid>
+                {
+                    !this.model.id &&
+                    <Grid item xs={12} sm={7}>
+                        <ControlInput
+                            required
+                            type="number"
+                            label={Strings.RealEstate.PRICE}
+                            defaultValue={this.model.price?.value || ""}
+                            onChangeValue={(value) => {
+                                this.setModel({
+                                    price: { value }
+                                })
+                            }}
+                            errorMessage={this.model.price?.error}
+                        />
+                    </Grid>
+                }
+                {
+                    (this.model.id && Number(this.model.price?.value) === 0) &&
+                    <Grid item xs={12} sm={7}>
+                        <ControlInput
+                            disabled
+                            label={Strings.RealEstate.PRICE}
+                            defaultValue={"Thỏa thuận"}
+                            onChangeValue={(value) => {
+                                
+                            }}
+                            errorMessage={this.model.price?.error}
+                        />
+                    </Grid>
+                }
                 <Grid item xs={12} sm={7}>
                     <ControlInput
                         type="number"

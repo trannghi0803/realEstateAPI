@@ -46,7 +46,8 @@ class CategoryListController extends BaseController<CategoryModel, CategoryServi
             let data: any = {
                 pageNumber: this.model.pageNumber,
                 pageSize: this.model.pageSize,
-                name: this.model.searchText || undefined
+                name: this.model.searchText || undefined,
+                type: this.model.typeFilter?.value || undefined,
             }
             const result = await this.service.getPaged(data);
             this.setModel({
@@ -70,6 +71,18 @@ class CategoryListController extends BaseController<CategoryModel, CategoryServi
             await Helpers.showAlert(Strings.Message.ERROR, "error");
             this.hidePageLoading();
         }
+    }
+
+    onReset = async () => {
+        this.setModel({
+            totalCount: undefined,
+            pageNumber: 1,
+            pageSize: Constants.ROW_PER_PAGE,
+            searchText: '',
+            typeFilter: undefined,
+            renderKey: Date.now()
+        })
+        this.getPaged();
     }
 
     deleteCategory = (id: string) => {

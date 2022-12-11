@@ -7,10 +7,11 @@ import { GridCellParams, GridColDef, GridRowsProp } from "@material-ui/data-grid
 
 import BaseView from "../base/BaseView";
 import { Constants, Screens, Strings } from "../../../constants";
-import { ControlDatagrid, ControlPopupMenu, CustomSearchFilter } from "../../../components";
+import { ControlAutocomplete, ControlDatagrid, ControllChip, ControlPopupMenu, CustomSearchFilter } from "../../../components";
 import { CategoryModel } from "../../models";
 import { CategoryListController } from "../../controllers/category";
 import { CategoryService } from "../../services";
+import Helpers from "../../../commons/utils/Helpers";
 
 @observer
 export default class CategoryListView extends BaseView<CategoryListController, CategoryModel, CategoryService> {
@@ -21,6 +22,7 @@ export default class CategoryListView extends BaseView<CategoryListController, C
     renderFormFilter = () => {
         return (
             <CustomSearchFilter
+                maxWidthDialog={"xs"}
                 key={this.model.searchText}
                 searchName={this.model.searchText}
                 placeholder={Strings.Common.SEARCH}
@@ -31,7 +33,25 @@ export default class CategoryListView extends BaseView<CategoryListController, C
                     });
                     this.controller.getPaged();
                 }}
+                onFilter={() => { this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25) }}
+                onReset={() => { this.controller.onReset() }}
             >
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <ControlAutocomplete
+                            variant={"outlined"}
+                            label={Strings.Category.TYPE}
+                            items={this.model.typeList || []}
+                            key={`${this.model.typeFilter?.value}`}
+                            value={`${this.model.typeFilter?.value}`}
+                            onChangeValue={(value) => {
+                                this.setModel({
+                                    typeFilter: { value }
+                                })
+                            }}
+                        />
+                    </Grid>
+                </Grid>
             </CustomSearchFilter>
         )
     }
@@ -122,6 +142,32 @@ export default class CategoryListView extends BaseView<CategoryListController, C
                         >
                             {Strings.Common.ADD_NEW}
                         </Button>
+                    }
+                </Grid>
+                <Grid item xs={12}>
+                    {
+                        (!Helpers.isNullOrEmpty(this.model.typeFilter?.value)) &&
+                        <ControllChip
+                            label={`${Strings.Category.TYPE}: ${this.model.typeList?.find(el => el.code === this.model.typeFilter?.value)?.name}`}
+                            onDelete={() => {
+                                this.setModel({
+                                    typeFilter: undefined,
+                                });
+                                this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
+                            }}
+                        />
+                    }
+                    {
+                        (!Helpers.isNullOrEmpty(this.model.searchText)) &&
+                        <ControllChip
+                            label={`${Strings.Category.NAME}: ${this.model.searchText}`}
+                            onDelete={() => {
+                                this.setModel({
+                                    searchText: undefined,
+                                });
+                                this.controller.handleChangePage(1, this.model.pageSize || Constants.ROW_PER_PAGE_25)
+                            }}
+                        />
                     }
                 </Grid>
                 <Grid item xs={12}>

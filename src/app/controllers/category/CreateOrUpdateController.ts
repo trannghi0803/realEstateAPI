@@ -67,7 +67,7 @@ class CreateOrUpdateController extends BaseController<CategoryModel, CategorySer
             }
             this.showPageLoading();
             let data: any = {
-                type: this.model.type?.value,
+                type: Number(this.model.type?.value),
                 name: this.model.name?.value,
                 description: this.model.description
             }
