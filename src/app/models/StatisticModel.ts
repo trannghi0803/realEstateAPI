@@ -22,15 +22,18 @@ class StatisticModel extends BaseModel {
     public realEstateByCategoryTimeStart?: any;
     public realEstateByCategoryTimeEnd?: any;
     public realEstateByCategoryType?: IInput
+    public realEstateByCategoryProvince?: any
+    
 
-    public realEstateByRentCategoryTimeStart?: any;
-    public realEstateByRentCategoryTimeEnd?: any;
+    // public realEstateByRentCategoryTimeStart?: any;
+    // public realEstateByRentCategoryTimeEnd?: any;
     
     public realEstateByRegionTimeStart?: any;
     public realEstateByRegionTimeEnd?: any;
 
     public areaByCategoryTimeStart?: any;
     public areaByCategoryTimeEnd?: any;
+    public areaByCategoryProvince?: any;
 
 
     public typeList?: ICodename[] = [
@@ -43,6 +46,8 @@ class StatisticModel extends BaseModel {
             name: "Nhà đất cho thuê"
         }
     ]
+
+    public provinceList?: ICodename[] = []
 }
 
 export default StatisticModel;

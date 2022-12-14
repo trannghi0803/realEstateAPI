@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
 import moment from 'moment';
+import { ICodename } from '../../../commons/utils';
 import Helpers from '../../../commons/utils/Helpers';
+import { GlobalState } from '../../../stores/GlobalState';
 import { StatisticModel } from "../../models";
 import { StatisticService } from "../../services";
 import { BaseController } from "../base";
@@ -31,6 +33,7 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
             await this.countAreaByCategory();
             await this.countByCategory();
             await this.countByRegion();
+            await this.getCityList();
             // await this.countByRentCategory();
             this.hidePageLoading();
         } catch (error) {
@@ -43,7 +46,8 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
             this.showPageLoading();
             let request = {
                 startTime: moment(this.model.realEstateByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
-                endTime: moment(this.model.realEstateByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix()
+                endTime: moment(this.model.realEstateByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
+                provinceName: this.model.provinceList?.find(el => el.code === this.model.realEstateByCategoryProvince)?.name || undefined,
             }
             const sell = await this.service.countRealEstateByCategory(request);
             const rent = await this.service.countRealEstateByRentCategory(request);
@@ -138,9 +142,11 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
             let request = {
                 startTime: moment(this.model.areaByCategoryTimeStart).unix() || moment(Date.now()).startOf('month').unix(),
                 endTime: moment(this.model.areaByCategoryTimeEnd).unix() || moment(Date.now()).endOf('month').unix(),
+                provinceName: this.model.provinceList?.find(el => el.code === this.model.areaByCategoryProvince)?.name || undefined,
             }
             const sell = await this.service.countAreaByCategory(request);
             const rent = await this.service.countAreaByRentCategory(request);
+            
             let areaByCategoryList: any[] = [
                 ["area", "Count by category"]
             ];
@@ -206,7 +212,29 @@ class StatisticListController extends BaseController<StatisticModel, StatisticSe
             this.handleException(error)
         }
     }
-
+    
+    getCityList = async () => {
+        try {
+            // this.showPageLoading()
+            const provinceResult = GlobalState.cityList;
+            const provinceList: ICodename[] = [];
+            provinceResult?.forEach((city: any) => {
+                provinceList.push({
+                    id: city._id,
+                    code: city.Code,
+                    group: "province",
+                    name: city.Name,
+                });
+            });
+            // this.hidePageLoading();
+            this.setModel({
+                provinceList
+            });
+        } catch (error) {
+            // this.hidePageLoading();
+            this.handleException(error);
+        }
+    }
     
 }
 export default StatisticListController;

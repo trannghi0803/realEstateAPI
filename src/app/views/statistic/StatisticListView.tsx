@@ -24,7 +24,7 @@ export default class StatisticListView extends BaseView<StatisticListController,
                 <Grid container spacing={2} md={12} xl={12} className="mt-3">
                     <p className="titleChart"> {"Thống kê bất động sản theo loại"}</p>
                     <Grid container xs={12} md={12} spacing={2}>
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={3}>
                             <ControlDateTimePicker
                                 size="small"
                                 variant="outlined"
@@ -38,7 +38,7 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={3}>
                             <ControlDateTimePicker
                                 size="small"
                                 variant="outlined"
@@ -53,7 +53,7 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 }}
                             />
                         </Grid>
-                        {/* <Grid item xs={12} md={4}>
+                        {/* <Grid item xs={12} md={3}>
                             <ControlAutocomplete
                                 variant={"outlined"}
                                 label={Strings.Category.TYPE}
@@ -67,7 +67,20 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 }}
                             />
                         </Grid> */}
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={3}>
+                            <ControlAutocomplete
+                                variant="outlined"
+                                label={Strings.RealEstate.CITY}
+                                items={this.model.provinceList || []}
+                                value={this.model.realEstateByCategoryProvince || ""}
+                                onChangeValue={(value) => {
+                                    this.setModel({
+                                        realEstateByCategoryProvince: value
+                                    })
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={3}>
                             <Button
                                 color="primary"
                                 variant="contained"
@@ -86,7 +99,7 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 width={"100%"}
                                 height={"400px"}
                                 options={{
-                                    title: "Bất động sản mua bán",
+                                    title: "Bất động sản cần bán",
                                 }}
                             />
                         </Grid>
@@ -106,9 +119,9 @@ export default class StatisticListView extends BaseView<StatisticListController,
                 </Grid>
 
                 <Grid container spacing={2} md={12} xl={12} className="mt-3">
-                    <p className="titleChart"> {"Thống kê diện tích bất động sản theo loại"}</p>
+                    <p className="titleChart"> {"Thống kê diện tích bất động sản trong khu vực theo loại"}</p>
                     <Grid container xs={12} md={12} spacing={2}>
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={3}>
                             <ControlDateTimePicker
                                 size="small"
                                 variant="outlined"
@@ -122,7 +135,7 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={3}>
                             <ControlDateTimePicker
                                 size="small"
                                 variant="outlined"
@@ -137,7 +150,20 @@ export default class StatisticListView extends BaseView<StatisticListController,
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={3}>
+                            <ControlAutocomplete
+                                variant="outlined"
+                                label={Strings.RealEstate.CITY}
+                                items={this.model.provinceList || []}
+                                value={this.model.areaByCategoryProvince || ""}
+                                onChangeValue={(value) => {
+                                    this.setModel({
+                                        areaByCategoryProvince: value
+                                    })
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={3}>
                             <Button
                                 color="primary"
                                 variant="contained"
@@ -220,7 +246,7 @@ export default class StatisticListView extends BaseView<StatisticListController,
                     <Grid item xs={12}>
                         <Chart
                             chartType="BarChart"
-                            data={this.model?.realEstateByRegionList}
+                            data={this.model?.realEstateByRegionList || []}
                             options={{
                                 hAxis: {
                                     title: "Tổng số bài đăng",
